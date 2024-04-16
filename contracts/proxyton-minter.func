@@ -42,13 +42,6 @@ const int fee::provide_address_gas_consumption = 13000000;
         return ();
     }
 
-    slice cs = in_msg_full.begin_parse();
-    int flags = cs~load_uint(4);
-
-    if (flags & 1) { ;; ignore all bounced messages
-        return ();
-    }
-
     int op = in_msg_body~load_op();
     int query_id = in_msg_body~load_query_id();
 
