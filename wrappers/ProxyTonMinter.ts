@@ -1,5 +1,5 @@
 import { Address, beginCell, Cell, Contract, contractAddress, ContractProvider, Sender, SendMode } from '@ton/core';
-import { ops } from '../utils/ops';
+import { ops } from '../utils/constants';
 
 export type ProxyTonMinterConfig = {
     content: Cell;

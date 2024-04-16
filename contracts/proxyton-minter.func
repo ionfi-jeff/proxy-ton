@@ -49,38 +49,6 @@ const int fee::provide_address_gas_consumption = 13000000;
         return mint_wallet(to_address, jetton_wallet_code);
     }
 
-    if (op == op::provide_wallet_address) {
-        throw_unless(error::discovery_fee_not_matched, msg_value > fee::provide_address_gas_consumption);
-
-        ;; Parse sender address
-        slice cs = msg_cell.begin_parse();
-        cs~skip_bits(4); ;; message flags
-        slice sender_address = cs~load_msg_addr();
-
-        slice owner_address = in_msg_body~load_msg_addr();
-        int include_address? = in_msg_body~load_uint(1);
-
-        cell included_address = include_address?
-                ? begin_cell().store_slice(owner_address).end_cell()
-                : null();
-
-        var msg = begin_cell()
-                .store_msg_flag(msg_flag::bounceable)
-                .store_slice(sender_address)
-                .store_coins(0)
-                .store_uint(0, 1 + 4 + 4 + 64 + 32 + 1 + 1)
-                .store_op(op::take_wallet_address)
-                .store_query_id(query_id);
-
-        if (is_resolvable?(owner_address)) {
-            msg = msg.store_slice(calculate_user_jetton_wallet_address(owner_address, my_address(), jetton_wallet_code));
-        } else {
-            msg = msg.store_uint(0, 2); ;; addr_none
-        }
-        send_raw_message(msg.store_maybe_ref(included_address).end_cell(), CARRY_REMAINING_GAS);
-        return ();
-    }
-
     throw(error::unknown_op);
 }
 

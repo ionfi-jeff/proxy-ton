@@ -1,27 +1,10 @@
 import { Address, beginCell, Cell, Contract, contractAddress, ContractProvider, Sender, SendMode } from '@ton/core';
-import { ops } from '../utils/ops';
+import { ops } from '../utils/constants';
 
 export type ProxyTonWalletConfig = {};
 
 export function proxyTonWalletConfigToCell(config: ProxyTonWalletConfig): Cell {
     return beginCell().endCell();
-}
-
-export function externalTransfer(params: {
-    queryId: bigint;
-    amount: bigint;
-    responseAddress?: Address | null;
-    forwardAmount?: bigint;
-    forwardPayload?: Cell;
-}) {
-    return beginCell()
-        .storeUint(ops.external_transfer, 32)
-        .storeUint(params.queryId, 64)
-        .storeCoins(params.amount)
-        .storeAddress(params.responseAddress ?? null)
-        .storeCoins(params.forwardAmount ?? 0n)
-        .storeMaybeRef(params.forwardPayload ?? null)
-        .endCell();
 }
 
 export class ProxyTonWallet implements Contract {
